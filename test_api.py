@@ -6,8 +6,8 @@ with open("complex_test_script.py", "r") as f:
 # Make a POST request to your local Flask server
 response = requests.post(
     "http://localhost:8080/execute",
-    headers={"Content-Type": "text/plain"},
-    data=script_content
+    headers={"Content-Type": "application/json"},
+    json={"script": script_content}
 )
 
 # Print the result
