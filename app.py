@@ -13,9 +13,11 @@ app = Flask(__name__)
 def run_script_with_nsjail(script_code):
     project_root = os.path.abspath(os.path.dirname(__file__))
     script_path = os.path.join(project_root, "user_script.py")
+    # Always end the user script with a newline before appending
     with open(script_path, "w") as f:
-        f.write(script_code)
-        f.write('\n\nif __name__ == "__main__":\n')
+        f.write(script_code.rstrip() + '\n')
+        f.write('\n')
+        f.write('if __name__ == "__main__":\n')
         f.write('    import json\n')
         f.write('    result = main()\n')
         f.write('    print("___RESULT_START___")\n')
@@ -28,7 +30,7 @@ def run_script_with_nsjail(script_code):
         "--mount", "none:/app:tmpfs:size=10M",
         "--bindmount_ro", f"{project_root}:/app",
         "--cwd", "/app",
-        "--", "/app/takeAwayTest/bin/python3", "user_script.py"
+        "--", "/usr/local/bin/python", "user_script.py"
     ]
     proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=10)
     stdout = proc.stdout.decode()
@@ -52,7 +54,8 @@ def run_script_with_nsjail(script_code):
         else:
             out_lines.append(line)
     if result is None:
-        return None, stdout, stderr, 'main() did not return a result'
+        # For debugging: include stderr in the error response
+        return None, stdout, stderr, f'main() did not return a result. stderr: {stderr}'
     # Clean up the script file
     os.remove(script_path)
     return result, '\n'.join(out_lines), None, None
@@ -73,4 +76,4 @@ def execute():
 
 
 if __name__ == "__main__":
-    app.run(port=8080, debug=True)
+    app.run(port=8080)

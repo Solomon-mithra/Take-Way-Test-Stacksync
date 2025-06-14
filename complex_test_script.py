@@ -1,6 +1,8 @@
 import math
 import json
 import numpy as np
+import os
+import pandas as pd
 
 class Circle:
     def __init__(self, radius):
@@ -13,20 +15,18 @@ class Circle:
         return f"A circle with radius {self.radius} has area {self.area():.2f}"
 
 def main():
-    c = Circle(5)
-    print(c.describe())
-
+    arr = np.array([1,2,3])
     array = np.arange(10)
     squared = array ** 2
     stats = {
-        "mean": np.mean(squared).item(),
-        "sum": np.sum(squared).item()
+        "mean": float(np.mean(squared)),
+        "sum": int(np.sum(squared))
     }
-
-    data = {
-        "description": c.describe(),
-        "stats": stats,
-        "squared_list": squared.tolist()
+    print("Array!")
+    return {
+        "arr_sum": int(np.sum(arr)),
+        "squared_sum": int(np.sum(squared)),
+        "squared_mean": float(np.mean(squared)),
+        "df_rows": 3,
+        "df_cols": 1
     }
-
-    return data
