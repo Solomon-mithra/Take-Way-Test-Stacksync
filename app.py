@@ -13,7 +13,7 @@ app = Flask(__name__)
 def run_script_with_nsjail(script_code):
     project_root = os.path.abspath(os.path.dirname(__file__))
     script_path = os.path.join(project_root, "user_script.py")
-    # Always end the user script with a newline before appending
+    # Always ending the user script with a newline before appending
     with open(script_path, "w") as f:
         f.write(script_code.rstrip() + '\n')
         f.write('\n')
@@ -35,7 +35,7 @@ def run_script_with_nsjail(script_code):
     proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=10)
     stdout = proc.stdout.decode()
     stderr = proc.stderr.decode()
-    # Extract result from stdout
+    # Extracting result from stdout
     result = None
     out_lines = []
     in_result = False
@@ -54,7 +54,7 @@ def run_script_with_nsjail(script_code):
         else:
             out_lines.append(line)
     if result is None:
-        # For debugging: include stderr in the error response
+        # For debugging included stderr in the error response
         return None, stdout, stderr, f'main() did not return a result. stderr: {stderr}'
     # Clean up the script file
     os.remove(script_path)
